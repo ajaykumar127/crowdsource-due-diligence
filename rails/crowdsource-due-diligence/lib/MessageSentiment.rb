@@ -1,0 +1,4 @@
+class MessageSentiment
+
+
+end
