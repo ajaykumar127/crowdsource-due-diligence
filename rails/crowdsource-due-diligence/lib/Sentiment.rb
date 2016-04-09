@@ -9,7 +9,7 @@ class Sentiment
 		# messages = input_array.each { |msg| Message.new(msg[:content]) }
 
 		messages.each do |message|
-			if message.words.include? search_term
+			if message.matches_search_term?(search_term)
 				# do logic
 			end
 		end
