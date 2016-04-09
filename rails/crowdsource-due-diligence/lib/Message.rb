@@ -8,9 +8,8 @@ class Message
 	def initialize content
 		@words = content.to_words
 		@results = { positive_score: 0, negative_score: 0, positive_words: [], negative_words: [], absolute_sentiment: nil }
-		enumerate_sentiment(:positive, words)
-		enumerate_sentiment(:negative, words)
-		get_absolute_sentiment
+		get_absolute_sentiment(:positive)
+		get_absolute_sentiment(:negative)
 	end
 
 	def words
@@ -36,13 +35,14 @@ class Message
 	attr_reader :results
 	attr_writer :positive_score, :negative_score, :absolute_sentiment
 
-	def enumerate_sentiment type
-		sentiment = MessageSentiment.new(type)
+	def get_absolute_sentiment type
+		sentiment = MessageSentiment.new(type, words)
 		results["#{type}_score".to_sym] = sentiment.score
 		results["#{type}_words".to_sym] = sentiment.sentiment_words
+		compare_scores
 	end
 
-	def get_absolute_sentiment
+	def compare_scores
 		(absolute_sentiment = :positive) if positive_score > negative_score
     (absolute_sentiment = :negative) if negative_score > positive_score
     (absolute_sentiment = :neutral) if positive_score == negative_score

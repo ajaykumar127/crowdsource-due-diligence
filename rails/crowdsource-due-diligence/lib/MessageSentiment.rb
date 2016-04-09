@@ -1,17 +1,19 @@
+require 'Word'
 
 class MessageSentiment
 
-	def initialize sentiment_type, message_words, word_klass=Word
-		@message_words = message_words.map { |word| word_klass.new(word, sentiment_type) }
+	def initialize type, message_words, word_klass=Word
+		@message_words = message_words.map { |word| word_klass.new(word, type) }
 		@score = 0
 		@sentiment_words = []
-		find_sentiment
+    verify_words
+		calculate_sentiment
 	end
 
 	def score
 		@score
 	end
-	# here I am breaking encapsulation to make for easier reading further up the algorithm process. Good/bad?
+	# breaking encapsulation to make for easier reading further up the algorithm process.
 
 	def words
 		@sentiment_words.clone
@@ -19,12 +21,17 @@ class MessageSentiment
 
 	private
 
-	def find_sentiment
-    message_words.each.with_index { |word, i| message_words[i+1].negate if word.is_negator? || word.is_inverter? }
-
-  	message_words.keep_if { |word| word.counts? }
+	def calculate_sentiment
   	self.score = message_words.length
-  	message_words.each { |word| sentiment_words << word }
+  	message_words.each { |word| sentiment_words << word.word }
+	end
+
+	def verify_words
+		message_words.each.with_index do |word, i|
+			word.negate if i+1 != message_words.length && message_words[i+1].is_inverter?
+    	message_words[i+1].negate if word.is_negator?
+    end
+		message_words.keep_if { |word| word.counts? }
 	end
 
 	attr_writer :score

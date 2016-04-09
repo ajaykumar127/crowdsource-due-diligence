@@ -3,7 +3,7 @@ require 'MessageSentiment'
 
 describe MessageSentiment do 
 
-	let(:message) { "I am a good programmer and programming is pleasant".split(" ") }
+	let(:message) { "I am a good programmer and programming is pleasant but small screens are amazingly bad and are not fun".split(" ") }
 
 	subject(:message_sentiment) { described_class.new(:positive, message) }
 

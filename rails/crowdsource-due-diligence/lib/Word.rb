@@ -6,12 +6,17 @@ class Word
 	# extract this include eventually
 
 	NEGATORS = ['not', 'isnt', 'arent', 'aint', 'hardly', 'un', 'dont', 'no', 'non']
+	# convert to symbols?
 
 	def initialize word, sentiment_type
 		@word = word
 		@libs = get_libs(sentiment_type)
 		@counts = is_match?
 		@reject_lib = reject_lib
+	end
+
+	def word
+		@word.clone
 	end
 
 	def counts?
@@ -44,7 +49,7 @@ class Word
 		libs[:lookup]
 	end
 
-	attr_reader :word, :libs
+	attr_reader :libs
 	attr_accessor :counts
 
 end
