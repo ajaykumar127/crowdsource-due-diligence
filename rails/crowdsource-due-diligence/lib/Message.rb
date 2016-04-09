@@ -5,7 +5,8 @@ class Message
 
 	attr_reader :absolute_sentiment, :results
 
-	def initialize content
+	def initialize content, sentiment_klass=MessageSentiment
+		@sentiment_klass = sentiment_klass
 		@words = content.to_words
 		@results = { positive_score: 0, negative_score: 0, positive_words: [], negative_words: [], absolute_sentiment: nil, content: content}
 		get_absolute_sentiment(:positive)
@@ -27,11 +28,11 @@ class Message
 
 	private
 
-	attr_reader :words
+	attr_reader :words, :sentiment_klass
 	attr_writer :positive_score, :negative_score, :absolute_sentiment
 
 	def get_absolute_sentiment type
-		sentiment = MessageSentiment.new(type, words)
+		sentiment = sentiment_klass.new(type, words)
 		results["#{type}_score".to_sym] = sentiment.score
 		results["#{type}_words".to_sym] = sentiment.words
 		compare_scores
@@ -53,11 +54,11 @@ class Message
 	end
 
 	def positive_words
-		results[:positive_words].clone
+		results[:positive_words]
 	end
 
 	def negative_words
-		results[:negative_words].clone
+		results[:negative_words]
 	end
 
 end
