@@ -2,30 +2,21 @@
 class Sentiment
 
 	def initialize
-		reset_results
+		@results = { positive: 0, neutral: 0, negative: 0, search_term: nil, messages: [] }
 	end
 
-	def compute input_array, search_term
-		# messages = input_array.each { |msg| Message.new(msg[:content]) }
-
-		messages.each do |message|
-			if message.matches_search_term?(search_term)
-				# do logic
-			end
+	def analyze_messages input_array, search_term
+		msgs = input_array.each { |msg| Message.new(msg[:content]) }
+		msgs.each do |m| 
+			# increment results hash
+			self.results[:messages] << m.results if m.matches_search_term?(search_term)
 		end
-
-		# now we have an array of message objects
-		# modify results based on
-		results[:search_term] = search_term
-		return results.clone
+		self.results[:search_term] = search_term
+		results.clone
 	end
 
 	private
 
-	attr_reader :results
-
-	def reset_results
-		@results = { positive: 0, neutral: 0, negative: 0, search_term: nil, messages: [] }
-	end
+	attr_accessor :results
 
 end
