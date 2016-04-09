@@ -1,22 +1,19 @@
+require 'Message'
 
 class Sentiment
 
-	def initialize
-		@results = { positive: 0, neutral: 0, negative: 0, search_term: nil, messages: [] }
-	end
-
 	def analyze_messages input_array, search_term
-		msgs = input_array.each { |msg| Message.new(msg[:content]) }
-		msgs.each do |m| 
-			# increment results hash
-			self.results[:messages] << m.results if m.matches_search_term?(search_term)
+		results = { positive: 0, neutral: 0, negative: 0, search_term: nil, messages: [] }
+		messages = input_array.map { |msg| Message.new(msg[:content]) }
+		messages.each do |msg|
+			if msg.matches_search_term?(search_term)
+				# use inject
+				results[msg.absolute_sentiment] += 1
+				results[:messages] << msg.results
+			end
 		end
-		self.results[:search_term] = search_term
+		results[:search_term] = search_term
 		results.clone
 	end
-
-	private
-
-	attr_accessor :results
 
 end
